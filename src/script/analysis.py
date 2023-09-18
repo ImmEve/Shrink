@@ -1,0 +1,208 @@
+import csv
+import os
+import pickle
+import matplotlib.pyplot as plt
+import numpy as np
+from sklearn.linear_model import LinearRegression
+from compare import process_pcap, request_chunk, fig_output
+
+
+def getDictdata(host_ip, analysis_path, pcap_path, dictdata_path):
+    with open(analysis_path, 'r') as f:
+        reader = csv.reader(f)
+        txt = list(reader)
+    key = {}
+    for i in txt:
+        pcap = i[0].split('/')[-1]
+        fingerprint = i[6].split('/')[1:]
+        key[pcap] = [int(j) for j in fingerprint if int(j) > 600 * 1024]
+
+    pcaplist = os.listdir(pcap_path)
+    videodict = {}
+    fingerdict = {}
+    for pcap in pcaplist:
+        pcap = pcap.split('.')[0]
+        P, videoflows, P_all = process_pcap(pcap_path + pcap + '.pcap', host_ip)
+        video = request_chunk(P_all, host_ip)
+        if pcap in key.keys():
+            finger = key[pcap]
+            videodict[pcap] = video
+            fingerdict[pcap] = finger
+
+    with open(dictdata_path + 'videodict.data', 'wb') as f:
+        pickle.dump(videodict, f)
+    with open(dictdata_path + 'fingerdict.data', 'wb') as f:
+        pickle.dump(fingerdict, f)
+
+
+def getFitlist(dictdata_path, dt):
+    with open(dictdata_path + 'videodict.data', 'rb') as f:
+        videodict = pickle.load(f)
+    with open(dictdata_path + 'fingerdict.data', 'rb') as f:
+        fingerdict = pickle.load(f)
+
+    videodict_align = {}
+    fingerdict_align = {}
+    pcaplist = list(videodict.keys())
+    all_finger = []
+    fit_num = [446, 445, 443, 441, 437, 435, 433, 432, 431, 429, 426, 422, 421, 418, 415, 407, 406, 399, 398, 395, 392,
+               388, 385, 384, 381, 379, 378, 377, 375, 368, 363, 360, 358, 352, 348, 342, 334, 320, 293, 291, 251, 243,
+               240, 236, 232, 229, 226, 224, 219, 218, 216, 213, 212, 211, 205, 202, 200, 197, 196, 193, 190, 182, 177,
+               173, 166, 164, 163, 156, 155, 154, 152, 149, 146, 145, 140, 137, 136, 131, 130, 129, 122, 120, 118, 117,
+               115, 108, 107, 58, 53, 26]
+    fit_num.reverse()
+
+    for pcap in pcaplist:
+        all_finger = all_finger + fingerdict[pcap]
+        length = min(len(videodict[pcap]), len(fingerdict[pcap]))
+        # video = videodict[pcap]
+        # finger = fingerdict[pcap]
+        # fig_output(video, finger, 'D:/project/quic_video_clawer/data/fig/all/' + pcap)
+        video = videodict[pcap][:length]
+        finger = fingerdict[pcap][:length]
+        if int(pcap.split('_')[0]) in fit_num:
+            video_align, finger_align = align(video, finger, 3)
+            videodict_align[pcap] = video_align
+            fingerdict_align[pcap] = finger_align
+            # fig_output(video_align, finger_align, 'D:/project/quic_video_clawer/data/fig/align/' + pcap)
+
+    maxchunk = max(all_finger)
+    minchunk = min(all_finger)
+    videolist = list(videodict_align.values())
+    fingerlist = list(fingerdict_align.values())
+    fit_list = []
+    for i in range(len(videolist)):
+        for j in range(min(len(videolist[i]), len(fingerlist[i]))):
+            fit_list.append([videolist[i][j], fingerlist[i][j]])
+    print(len(fit_list))
+    tmp = []
+    for i in fit_list:
+        if abs(i[0] - i[1]) < dt:
+            tmp.append(i)
+
+    return tmp, maxchunk, minchunk
+
+
+def fit(X, y):
+    reg = LinearRegression().fit(X, y)
+    y_pred = reg.predict(X)
+
+    plt.scatter(X, y, color='black')
+    plt.plot(X, y_pred, color='blue', linewidth=3)
+    plt.xlabel('$chunk_{divide}$')
+    plt.ylabel('$chunk_{real}$')
+    plt.grid()
+    plt.draw()
+    plt.savefig('D:/project/quic_video_clawer/data/fig/result/Scatter plot of video chunk.pdf')
+
+    return reg.coef_, reg.intercept_
+
+
+def align(array1, array2, distance):
+    S = []
+    Larr = len(array1)
+    for i in range(distance):
+        tmp = [abs(array1[i:][j] - array2[:Larr - i][j]) for j in range(Larr - i)]
+        s = sum(tmp)
+        S.append(s / (Larr - i))
+    ind = S.index(min(S))
+    return array1[ind:], array2[:Larr - ind]
+
+def fig_pdf(X):
+    plt.hist(X, bins=30, density=True, alpha=0.7, color='blue')
+
+
+def findOptimal(result_path):
+    with open(result_path, 'rb') as f:
+        result = pickle.load(f)
+    acc1 = []
+    acc2 = []
+    for i in range(len(result)):
+        ac1 = [j[2][4] for j in result[i][1:]]
+        ac2 = [j[2][5] for j in result[i][1:]]
+        acc1.append(max(ac1))
+        acc2.append(max(ac2))
+
+    y = acc1
+    x = [result[i][0] for i in range(len(y))]
+    plt.plot(x, y, marker='o', color='red', label='acc1')
+    plt.legend()
+
+    y = acc2
+    x = [result[i][0] for i in range(len(y))]
+    plt.plot(x, y, marker='v', color='black', label='acc2')
+    plt.legend()
+
+    plt.grid()
+    plt.show()
+
+    return result, acc1, acc2
+
+
+def plot3D(X):
+    X = np.array(X)
+
+    # 将第4个维度的值映射到颜色深浅上
+    color = X[:, 3]
+    norm = plt.Normalize(color.min(), color.max())
+    cmap = plt.colormaps.get_cmap('viridis')
+
+    # 可视化数据
+    fig = plt.figure()
+    ax = fig.add_subplot(111, projection='3d')
+    ax.scatter(X[:, 0], X[:, 1], X[:, 2], c=color, cmap=cmap, norm=norm)
+
+    # 添加标签和标题
+    ax.set_xlabel('X')
+    ax.set_ylabel('Y')
+    ax.set_zlabel('Z')
+    ax.set_title('4D Data Visualization')
+
+    # 添加颜色条
+    sm = plt.cm.ScalarMappable(cmap=cmap, norm=norm)
+    sm.set_array([])
+    plt.colorbar(sm)
+
+    # 显示图像
+    plt.show()
+
+if __name__ == '__main__':
+    # analysis_path = 'D:/project/quic_video_clawer/data/fingerprint/analysis_tmp.csv'
+    # pcap_path = 'D:/project/quic_video_clawer/data/record/test/pcap/'
+    dictdata_path = 'D:/project/quic_video_clawer/data/temp/'
+    # host_ip = '192.168.40.14'
+    # getDictdata(host_ip, analysis_path, pcap_path, dictdata_path)
+
+    fit_list, maxchunk, minchunk = getFitlist(dictdata_path, 100000)
+    X = np.array([[i[0]] for i in fit_list])
+    y = np.array([[i[1]] for i in fit_list])
+    coef, intercept = fit(X, y)
+
+    for i in range(len(fit_list)):
+        fit_list[i].append(int(fit_list[i][0] * coef[0][0] + intercept[0]))
+        fit_list[i].append(fit_list[i][1] - fit_list[i][2])
+
+    result_path = 'D:/project/quic_video_clawer/data/result/result_05_22_14_11.data'
+    result, acc1, acc2 = findOptimal(result_path)
+    maxacc1 = max(acc1)
+    ind_maxacc1 = acc1.index(maxacc1)
+    maxacc2 = max(acc2)
+    ind_maxacc2 = acc2.index(maxacc2)
+    a = result[ind_maxacc1]
+    b = result[ind_maxacc2]
+
+    # corr = {}
+    # X1 = []
+    # X2 = []
+    # for bucketnum in range(1, 200):
+    #     for high_orders in range(2, 30):
+    #         for high_win_size in range(1, 30 - high_orders):
+    #             for i in result:
+    #                 if bucketnum == i[0]:
+    #                     for j in i[1:]:
+    #                         if [high_orders, high_win_size, high_orders + high_win_size] == j[0]:
+    #                             corr[(bucketnum, high_orders, high_win_size)] = [j[2][4], j[2][5]]
+    #                             X1.append([bucketnum, high_orders, high_win_size, j[2][4]])
+    #                             X2.append([bucketnum, high_orders, high_win_size, j[2][5]])
+    # X = np.array(X2)
+    # plot3D(X)
