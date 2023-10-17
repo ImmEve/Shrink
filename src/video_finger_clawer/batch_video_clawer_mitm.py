@@ -471,13 +471,3 @@ if __name__ == '__main__':
     # clawer.clawer_from_csv('test')
 
     clawer.get_url("liuxing","https://www.youtube.com/feed/trending?bp=6gQJRkVleHBsb3Jl")
-    # clawer.get_url("shishang","https://www.youtube.com/channel/UCrpQ4p1Ql_hG8rKXIKM1MOQ")
-    # clawer.get_url("xuexi","https://www.youtube.com/channel/UCtFRv9O2AHqOZjjynzrv-xg")
-    # clawer.get_url("tiyu","https://www.youtube.com/channel/UCEgdi0XIXXZ-qJOFPf4JSKw")
-    # clawer.get_url("game","https://www.youtube.com/gaming/trending")
-    # clawer.get_url("xinwen","https://www.youtube.com/channel/UCEl0qh9X3kuL1RdFHng497Q")
-    # clawer.get_url("remen","https://www.youtube.com/feed/explore")
-    # clawer.get_url("lvyou","https://www.youtube.com/results?search_query=%E6%97%85%E6%B8%B8")
-    # clawer.get_url("shuma","https://www.youtube.com/results?search_query=%E6%95%B0%E7%A0%81")
-    # clawer.get_url("wudao","https://www.youtube.com/results?search_query=%E8%88%9E%E8%B9%88")
-    # clawer.get_url("dongman","https://www.youtube.com/results?search_query=%E5%8A%A8%E6%BC%AB")
