@@ -42,11 +42,8 @@ class data_Process():
         self.o_g_p_relation_list = []
         self.get_offline_finger()
         self.get_online_finger()
-        # self.small_chunk_clean(self.online_chunk_list, offline_audio_thd * 1.00135177 + 1119)
-        # self.small_chunk_clean(self.online_chunk_list, offline_audio_thd * 1.032069 - 6982.74576068)        # 1
-        # self.small_chunk_clean(self.online_chunk_list, offline_audio_thd * 1.00012647 + 56.33774465)        # 10000
-        # self.small_chunk_clean(self.online_chunk_list, offline_audio_thd * 1.03215458 - 10405.15884996)     # 100000
-        self.small_chunk_clean(self.online_chunk_list, offline_audio_thd * 1.02865161 + 1178.26159352)      # artificial 100000
+        self.small_chunk_clean(self.online_chunk_list,
+                               offline_audio_thd * 1.02865161 + 1178.26159352)  # artificial 100000
         self.small_chunk_clean(self.offline_chunk_list, offline_audio_thd)
         self.stream_label_match()
 
@@ -81,9 +78,10 @@ class data_Process():
             if lines == '':
                 continue
             vals = lines.split(',')
-            finger = vals[1].split('/')[:-1]  # 指纹
-            tuples = [vals[0]]  # 五元组
-            video_flow = Video_flow(list(map(int, finger)), tuples)
+            finger = vals[2].split('/')[:-1]  # 指纹
+            tuples = [vals[1]]  # 五元组
+            video_url = vals[0]
+            video_flow = Video_flow(list(map(int, finger)), tuples, video_url=video_url)
             self.online_chunk_list.append(video_flow)
 
     # 过滤掉指纹序列中小于阈值的块
@@ -101,10 +99,9 @@ class data_Process():
         for online_chunk in self.online_chunk_list:
             tmp = [online_chunk]
             for offline_chunk in self.offline_chunk_list:
-                for offline_tuples in offline_chunk.tuple_list:
-                    if online_chunk.tuple_list[0] == offline_tuples:
-                        o_g_p_relation = O_g_p_relation(original_stream=online_chunk, ground_truth_stream=offline_chunk)
-                        tmp.append(offline_chunk)  # 用于debug分析
+                if online_chunk.video_url == offline_chunk.video_url:
+                    o_g_p_relation = O_g_p_relation(original_stream=online_chunk, ground_truth_stream=offline_chunk)
+                    tmp.append(offline_chunk)  # 用于debug分析
             # 验证是否出现在线流五元组对应多个目标流五元组的情况,仅记录一对一的情况
             if len(tmp) == 2:
                 self.o_g_p_relation_list.append(o_g_p_relation)
@@ -218,8 +215,8 @@ class data_Process():
 
 if __name__ == '__main__':
     offline_audio_thd = 700000
-    finger_data = data_Process('./data/chunk_list/online_encrypted_finger_seq.csv',
-                               './data/chunk_list/finger_store_3.csv', offline_audio_thd)
+    finger_data = data_Process('E:/project/Shrink/data/fingerprint/online.csv',
+                               'E:/project/Shrink/data/fingerprint/finger.csv', offline_audio_thd)
     bin_count = [100, 200, 300, 400, 500, 600, 700, 800, 900, 1000, 2000, 3000, 4000, 5000]
     for i in range(1, 11, 1):
         for j in bin_count:

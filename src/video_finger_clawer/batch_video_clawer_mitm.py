@@ -46,7 +46,7 @@ class Batch_clawer_mitm():
         self.video_parse = Video_parse(self.video_parse_conf_file_path)
 
         self.headers = {
-            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/112.0.0.0 Safari/537.36'}
+            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/117.0.0.0 Safari/537.36'}
         self.driver = self.chrome_driver_init()
         self.video_url = []  # 一批视频爬取URL
 
@@ -209,18 +209,18 @@ class Batch_clawer_mitm():
         try:
             if self.video_parse.video_server_name == 'youtube':
                 # 点击设置
-                self.driver.find_element(By.XPATH, '//*[@aria-controls="ytp-id-18"]').click()
+                self.driver.find_element(By.XPATH, '//*[@aria-controls="ytp-id-17"]').click()
                 # 点击画质
-                self.driver.find_element(By.XPATH, '//*[@id="ytp-id-18"]//*[@class="ytp-menu-label-secondary"]').click()
+                self.driver.find_element(By.XPATH, '//*[@id="ytp-id-17"]//*[@class="ytp-menu-label-secondary"]').click()
                 time.sleep(0.5)
                 # 获取分辨率信息
-                # info=self.driver.find_element(By.XPATH,'//*[@id="ytp-id-18"]//*[@class="ytp-menuitem-label"]/div/span').text
+                # info=self.driver.find_element(By.XPATH,'//*[@id="ytp-id-17"]//*[@class="ytp-menuitem-label"]/div/span').text
                 html = self.driver.page_source.encode("utf-8", "ignore")
                 parseHtml = etree.HTML(html)
                 video_resolution = parseHtml.xpath(
-                    '//*[@id="ytp-id-18"]//*[@class="ytp-menuitem-label"]/div/span/text()')
+                    '//*[@id="ytp-id-17"]//*[@class="ytp-menuitem-label"]/div/span/text()')
                 # 复原
-                self.driver.find_element(By.XPATH, '//*[@aria-controls="ytp-id-18"]').click()
+                self.driver.find_element(By.XPATH, '//*[@aria-controls="ytp-id-17"]').click()
             else:
                 pass
         except:
@@ -232,16 +232,16 @@ class Batch_clawer_mitm():
     def video_resolution_switch(self, video_resolution):
         if self.video_parse.video_server_name == 'youtube':
             # 点击设置
-            self.driver.find_element(By.XPATH, '//*[@aria-controls="ytp-id-18"]').click()
+            self.driver.find_element(By.XPATH, '//*[@aria-controls="ytp-id-17"]').click()
             # 点击画质
-            self.driver.find_element(By.XPATH, '//*[@id="ytp-id-18"]//*[@class="ytp-menu-label-secondary"]').click()
+            self.driver.find_element(By.XPATH, '//*[@id="ytp-id-17"]//*[@class="ytp-menu-label-secondary"]').click()
             time.sleep(0.5)
             # 切换分辨率
-            element_path = '//*[@id="ytp-id-18"]//*[@class="ytp-menuitem-label"]/div/span[text()=\'' + str(
+            element_path = '//*[@id="ytp-id-17"]//*[@class="ytp-menuitem-label"]/div/span[text()=\'' + str(
                 video_resolution).strip() + '\']'
             self.driver.find_element(By.XPATH, element_path).click()
             # 复原
-            self.driver.find_element(By.XPATH, '//*[@aria-controls="ytp-id-18"]').click()
+            self.driver.find_element(By.XPATH, '//*[@aria-controls="ytp-id-17"]').click()
 
     # 目标分辨率与存在视频本身包含的分辨率取交集，作为最后的捕获分辨率
     def clawer_resolution_intersection(self, online_video_resolution):
@@ -466,8 +466,8 @@ class Batch_clawer_mitm():
 
 
 if __name__ == '__main__':
-    conf_path = "D:/project/quic_video_clawer/bin/video_title_clawer.conf"
+    conf_path = "E:/project/Shrink/bin/video_title_clawer.conf"
     clawer = Batch_clawer_mitm(conf_path)
-    # clawer.clawer_from_csv('test')
+    clawer.clawer_from_csv('test')
 
-    clawer.get_url("liuxing","https://www.youtube.com/feed/trending?bp=6gQJRkVleHBsb3Jl")
+    # clawer.get_url("liuxing","https://www.youtube.com/feed/trending?bp=6gQJRkVleHBsb3Jl")

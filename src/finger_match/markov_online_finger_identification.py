@@ -2,7 +2,7 @@ import math
 import pickle
 import time
 from collections import deque
-import time
+
 from finger_preprocess import data_Process
 
 
@@ -28,13 +28,15 @@ class Markov_alg():
         self.result = [0, 0, 0]
         error_count, online_short_count = self.online_match(high_orders, high_bins_count, high_win_size, 0)
         all_count, true_count, acc = self.pred_performance()
-        self.result[1] = [error_count, online_short_count, all_count, true_count, acc, true_count / (error_count + all_count)]
+        self.result[1] = [error_count, online_short_count, all_count, true_count, acc,
+                          true_count / (error_count + all_count)]
         # print('{},{},{},{},{},{}'.format(error_count, online_short_count, all_count, true_count, acc,
         #                                  true_count / (error_count + all_count)))
 
         error_count, online_short_count = self.online_match(low_orders, low_bins_count, low_win_size, 1)
         all_count, true_count, acc = self.pred_performance()
-        self.result[2] = [error_count, online_short_count, all_count, true_count, acc, true_count / (error_count + all_count)]
+        self.result[2] = [error_count, online_short_count, all_count, true_count, acc,
+                          true_count / (error_count + all_count)]
         # print('{},{},{},{},{},{}'.format(error_count, online_short_count, all_count, true_count, acc,
         #                                  true_count / (error_count + all_count)))
 
@@ -153,11 +155,7 @@ class Markov_alg():
             on_chunk_count = 0
             for on_chunk in online_chunk.finger_list:
                 # 动态偏置
-                # chunk_bias = (on_chunk - 1119) / 1.00135177
-                # chunk_bias = on_chunk * 0.968927 + 6765.77090166        # 1
-                # chunk_bias = on_chunk * 0.99987355 - 56.33062074        # 10000
-                # chunk_bias = on_chunk * 0.96884713 + 10081.00828898     # 100000
-                chunk_bias = on_chunk * 0.97214644 - 1145.44281353      # artificial 100000
+                chunk_bias = on_chunk * 0.97214644 - 1145.44281353
                 if chunk_bias >= self.video_chunk_size_max:
                     bin_index_cur = bins_count - 1
                 elif chunk_bias <= self.video_chunk_size_min:
@@ -188,13 +186,13 @@ class Markov_alg():
                 if on_key in state_transition_table:
                     for val in state_transition_table[on_key]:
                         if val[0] in state_dict:
-                            state_dict[val[0]] += on_val*val[1]
+                            # state_dict[val[0]] += on_val * val[1]
                             # state_dict[val[0]] +=on_val*val[1]*global_state_transition_table[on_key]
-                            # state_dict[val[0]] += on_val * val[1] + global_state_transition_table[on_key] * 100
+                            state_dict[val[0]] += on_val * val[1] + global_state_transition_table[on_key] * 100
                         else:
-                            state_dict[val[0]] = on_val*val[1]
+                            # state_dict[val[0]] = on_val * val[1]
                             # state_dict[val[0]]=on_val*val[1]*global_state_transition_table[on_key]
-                            # state_dict[val[0]] = on_val * val[1] + global_state_transition_table[on_key] * 100
+                            state_dict[val[0]] = on_val * val[1] + global_state_transition_table[on_key] * 100
 
             max_prob = 0
             target_id = -1
@@ -244,18 +242,8 @@ class Markov_alg():
 
 
 if __name__ == '__main__':
-    # online_file = 'D:/project/quic_video_clawer/data/fingerprint/online.csv'
-    # offline_file = 'D:/project/quic_video_clawer/data/fingerprint/finger.csv'
-    # offline_audio_thd = 600 * 1024
-    # for i in range(2, 10):
-    #     for j in range(1, 10 - i):
-    #         high_orders, high_bins_count, high_win_size = i, 1764, j
-    #         low_orders, low_bins_count, low_win_size = 1, 1764, i + j - 1
-    #         markov_alg = Markov_alg(online_file, offline_file, offline_audio_thd, high_orders, high_bins_count,
-    #                                 high_win_size, low_orders, low_bins_count, low_win_size)
-
-    online_file = 'D:/project/quic_video_clawer/data/fingerprint/online.csv'
-    offline_file = 'D:/project/quic_video_clawer/data/fingerprint/finger.csv'
+    online_file = 'E:/project/Shrink/data/fingerprint/online.csv'
+    offline_file = 'E:/project/Shrink/data/fingerprint/finger.csv'
     offline_audio_thd = 600 * 1024
     result = []
     for bucketnum in range(1, 201):
@@ -269,6 +257,6 @@ if __name__ == '__main__':
                                         high_win_size, low_orders, low_bins_count, low_win_size)
                 result_bucket.append(markov_alg.result)
         result.append(result_bucket)
-    t = time.strftime('%m_%d_%H_%M',time.localtime(time.time()))
-    with open('D:/project/quic_video_clawer/data/result/result_' + t + '.data', 'wb') as f:
+    t = time.strftime('%m_%d_%H_%M', time.localtime(time.time()))
+    with open('E:/project/Shrink/data/result/result_' + t + '.data', 'wb') as f:
         pickle.dump(result, f)

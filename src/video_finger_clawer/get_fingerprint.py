@@ -333,8 +333,7 @@ class Finger():
 
 
 if __name__ == '__main__':
-    finger = Finger("D:/project/quic_video_clawer/data/fingerprint/analysis_tmp.csv",
-                    "D:/project/quic_video_clawer/data/fingerprint/finger.csv")
-    # finger.from_root_path_get_finger("/home/local/data1/pcap/NAS_40_99/collect_video_fingerprint/chengsiyuan/game")
-    finger.from_path_file_get_finger("D:/project/quic_video_clawer/data/temp/mitm_file_path")
+    finger = Finger("E:/project/Shrink/data/fingerprint/analysis_tmp.csv",
+                    "E:/project/Shrink/data/fingerprint/finger.csv")
+    finger.from_path_file_get_finger("E:/project/Shrink/data/temp/mitm_file_path")
     finger.analysis_record()

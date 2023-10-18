@@ -160,14 +160,17 @@ def write_finger(pcappath, host_ip, tmpfile, fingerfile):
             f.write('\n')
 
 
-def write_onlie(pcappath, host_ip, onlinefile):
-    pcaplist = os.listdir(pcappath)
+def write_onlie(datapath, host_ip, onlinefile):
+    videolist = os.listdir(datapath + 'url/')
     with open(onlinefile, 'w', encoding='utf-8') as f:
-        for pcap in pcaplist:
-            pcap = pcap.split('.')[0]
-            P, videoflows, P_all = process_pcap(pcappath + pcap + '.pcap', host_ip)
+        for videoid in videolist:
+            with open(datapath + 'url/' + videoid, 'r', encoding='utf-8') as f1:
+                url = f1.read()
+            url = url.split(',')[0]
+            P, videoflows, P_all = process_pcap(datapath + 'pcap/' + videoid + '.pcap', host_ip)
             for videoflow in videoflows:
                 video = request_chunk(P[videoflow], host_ip)
+                f.write(url + ',')
                 f.write('{}.{}>{}.{},'.format(videoflow[1], videoflow[3], videoflow[0], videoflow[2]))
                 for chunk in video:
                     f.write(str(chunk) + '/')
@@ -190,14 +193,15 @@ def fig_output(y1, y2, path):
     plt.ylabel('$chunk\_size$')
     plt.grid()
     plt.draw()
-    plt.savefig(path + '.pdf')
+    plt.savefig(path + '.png')
     plt.close()
 
 
 if __name__ == '__main__':
-    host_ip = '192.168.40.14'
-    tmpfile = 'D:/project/quic_video_clawer/data/fingerprint/analysis_tmp.csv'
-    fingerfile = 'D:/project/quic_video_clawer/data/fingerprint/finger.csv'
-    onlinefile = 'D:/project/quic_video_clawer/data/fingerprint/online.csv'
-    write_finger('D:/project/quic_video_clawer/data/record/test/pcap/', host_ip, tmpfile, fingerfile)
-    write_onlie('D:/project/quic_video_clawer/data/record/test/pcap/', host_ip, onlinefile)
+    host_ip = '10.0.0.15'
+    tmpfile = 'E:/project/Shrink/data/fingerprint/analysis_tmp.csv'
+    fingerfile = 'E:/project/Shrink/data/fingerprint/finger.csv'
+    onlinefile = 'E:/project/Shrink/data/fingerprint/online.csv'
+    datapath = 'E:/project/Shrink/data/record/test/'
+    write_finger(datapath + 'pcap/', host_ip, tmpfile, fingerfile)
+    write_onlie(datapath, host_ip, onlinefile)
