@@ -468,6 +468,6 @@ class Batch_clawer_mitm():
 if __name__ == '__main__':
     conf_path = "C:/Shrink/bin/video_title_clawer.conf"
     clawer = Batch_clawer_mitm(conf_path)
-    clawer.clawer_from_csv('test9')
+    clawer.clawer_from_csv('test')
 
     # clawer.get_url("liuxing","https://www.youtube.com/feed/trending?bp=6gQJRkVleHBsb3Jl")
