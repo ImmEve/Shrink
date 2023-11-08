@@ -333,7 +333,7 @@ class Finger():
 
 
 if __name__ == '__main__':
-    finger = Finger("E:/project/Shrink/data/fingerprint/analysis_tmp.csv",
-                    "E:/project/Shrink/data/fingerprint/finger.csv")
-    finger.from_path_file_get_finger("E:/project/Shrink/data/temp/mitm_file_path")
+    finger = Finger("C:/Shrink/data/fingerprint/analysis_tmp.csv",
+                    "C:/Shrink/data/fingerprint/finger.csv")
+    finger.from_path_file_get_finger("C:/Shrink/data/temp/mitm_file_path")
     finger.analysis_record()

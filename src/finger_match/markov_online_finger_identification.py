@@ -242,8 +242,8 @@ class Markov_alg():
 
 
 if __name__ == '__main__':
-    online_file = 'E:/project/Shrink/data/fingerprint/online.csv'
-    offline_file = 'E:/project/Shrink/data/fingerprint/finger.csv'
+    online_file = 'C:/Shrink/data/fingerprint/online.csv'
+    offline_file = 'C:/Shrink/data/fingerprint/finger.csv'
     offline_audio_thd = 600 * 1024
     result = []
     for bucketnum in range(1, 201):
@@ -258,5 +258,5 @@ if __name__ == '__main__':
                 result_bucket.append(markov_alg.result)
         result.append(result_bucket)
     t = time.strftime('%m_%d_%H_%M', time.localtime(time.time()))
-    with open('E:/project/Shrink/data/result/result_' + t + '.data', 'wb') as f:
+    with open('C:/Shrink/data/result/result_' + t + '.data', 'wb') as f:
         pickle.dump(result, f)

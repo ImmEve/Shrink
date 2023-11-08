@@ -199,9 +199,9 @@ def fig_output(y1, y2, path):
 
 if __name__ == '__main__':
     host_ip = '10.0.0.15'
-    tmpfile = 'E:/project/Shrink/data/fingerprint/analysis_tmp.csv'
-    fingerfile = 'E:/project/Shrink/data/fingerprint/finger.csv'
-    onlinefile = 'E:/project/Shrink/data/fingerprint/online.csv'
-    datapath = 'E:/project/Shrink/data/record/test/'
+    tmpfile = 'C:/Shrink/data/fingerprint/analysis_tmp.csv'
+    fingerfile = 'C:/Shrink/data/fingerprint/finger.csv'
+    onlinefile = 'C:/Shrink/data/fingerprint/online.csv'
+    datapath = 'C:/Shrink/data/record/test/'
     write_finger(datapath + 'pcap/', host_ip, tmpfile, fingerfile)
     write_onlie(datapath, host_ip, onlinefile)

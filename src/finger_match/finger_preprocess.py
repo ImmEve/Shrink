@@ -215,8 +215,8 @@ class data_Process():
 
 if __name__ == '__main__':
     offline_audio_thd = 700000
-    finger_data = data_Process('E:/project/Shrink/data/fingerprint/online.csv',
-                               'E:/project/Shrink/data/fingerprint/finger.csv', offline_audio_thd)
+    finger_data = data_Process('C:/Shrink/data/fingerprint/online.csv',
+                               'C:/Shrink/data/fingerprint/finger.csv', offline_audio_thd)
     bin_count = [100, 200, 300, 400, 500, 600, 700, 800, 900, 1000, 2000, 3000, 4000, 5000]
     for i in range(1, 11, 1):
         for j in bin_count:

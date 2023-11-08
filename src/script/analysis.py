@@ -47,21 +47,21 @@ def getFitlist(dictdata_path, dt):
     fingerdict_align = {}
     pcaplist = list(videodict.keys())
     all_finger = []
-    fit_num = [2, 3, 4, 7, 8, 11, 14, 19, 21, 26, 27, 30, 31, 33, 34, 43, 53, 55, 56, 58, 60, 65, 68, 71, 72, 81, 83, 90, 91]
+    # fit_num = [2, 3, 4, 7, 8, 11, 14, 19, 21, 26, 27, 30, 31, 33, 34, 43, 53, 55, 56, 58, 60, 65, 68, 71, 72, 81, 83, 90, 91]
 
     for pcap in pcaplist:
         all_finger = all_finger + fingerdict[pcap]
         length = min(len(videodict[pcap]), len(fingerdict[pcap]))
         video = videodict[pcap]
         finger = fingerdict[pcap]
-        # fig_output(video, finger, 'E:/project/Shrink/data/fig/all/' + pcap)
+        # fig_output(video, finger, 'C:/Shrink/data/fig/all/' + pcap)
         video = videodict[pcap][:length]
         finger = fingerdict[pcap][:length]
-        if int(pcap.split('_')[0]) in fit_num:
-            video_align, finger_align = align(video, finger, 3)
-            videodict_align[pcap] = video_align
-            fingerdict_align[pcap] = finger_align
-            # fig_output(video_align, finger_align, 'E:/project/Shrink/data/fig/align/' + pcap)
+        # if int(pcap.split('_')[0]) in fit_num:
+        video_align, finger_align = align(video, finger, 3)
+        videodict_align[pcap] = video_align
+        fingerdict_align[pcap] = finger_align
+        # fig_output(video_align, finger_align, 'C:/Shrink/data/fig/align/' + pcap)
 
     maxchunk = max(all_finger)
     minchunk = min(all_finger)
@@ -90,7 +90,7 @@ def fit(X, y):
     plt.ylabel('$chunk_{real}$')
     plt.grid()
     plt.draw()
-    plt.savefig('E:/project/Shrink/data/fig/result/Scatter plot of video chunk.png')
+    plt.savefig('C:/Shrink/data/fig/result/Scatter plot of video chunk.png')
 
     return reg.coef_, reg.intercept_
 
@@ -138,11 +138,11 @@ def findOptimal(result_path):
 
 
 if __name__ == '__main__':
-    analysis_path = 'E:/project/Shrink/data/fingerprint/analysis_tmp.csv'
-    pcap_path = 'E:/project/Shrink/data/record/test/pcap/'
-    dictdata_path = 'E:/project/Shrink/data/temp/'
+    analysis_path = 'C:/Shrink/data/fingerprint/analysis_tmp.csv'
+    pcap_path = 'C:/Shrink/data/record/test/pcap/'
+    dictdata_path = 'C:/Shrink/data/temp/'
     host_ip = '10.0.0.15'
-    # getDictdata(host_ip, analysis_path, pcap_path, dictdata_path)
+    getDictdata(host_ip, analysis_path, pcap_path, dictdata_path)
 
     fit_list, maxchunk, minchunk = getFitlist(dictdata_path, 100000)
     X = np.array([[i[0]] for i in fit_list])

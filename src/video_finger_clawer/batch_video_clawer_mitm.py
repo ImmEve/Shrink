@@ -46,7 +46,7 @@ class Batch_clawer_mitm():
         self.video_parse = Video_parse(self.video_parse_conf_file_path)
 
         self.headers = {
-            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/117.0.0.0 Safari/537.36'}
+            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/119.0.0.0 Safari/537.36'}
         self.driver = self.chrome_driver_init()
         self.video_url = []  # 一批视频爬取URL
 
@@ -466,8 +466,8 @@ class Batch_clawer_mitm():
 
 
 if __name__ == '__main__':
-    conf_path = "E:/project/Shrink/bin/video_title_clawer.conf"
+    conf_path = "C:/Shrink/bin/video_title_clawer.conf"
     clawer = Batch_clawer_mitm(conf_path)
-    clawer.clawer_from_csv('test')
+    clawer.clawer_from_csv('test9')
 
     # clawer.get_url("liuxing","https://www.youtube.com/feed/trending?bp=6gQJRkVleHBsb3Jl")
