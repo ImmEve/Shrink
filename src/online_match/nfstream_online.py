@@ -51,10 +51,8 @@ class FlowFilter(NFPlugin):
 
 
 def streamer(offline_file, log_file):
-    streamer = NFStreamer(source='Tencent VirtIO Ethernet Adapter',
+    streamer = NFStreamer(source='Intel(R) Ethernet Connection I217-V',
                           udps=FlowFilter(offline_file=offline_file, log_file=log_file))
-    # streamer = NFStreamer(source='C:/Shrink/data/record/11_2023_09_26_20_39_32.pcap',
-    #                       udps=FlowFilter(offline_file=offline_file, log_file=log_file))
     return streamer
 
 
@@ -63,8 +61,8 @@ if __name__ == '__main__':
     online_file = 'C:/Shrink/data/fingerprint/nfstream_online.csv'
     t = time.strftime('%m_%d_%H_%M', time.localtime(time.time()))
     log_file = 'C:/Shrink/data/result/log_' + t + '.txt'
-    # f = open(log_file, 'a')
-    # f.close()
+    f = open(log_file, 'a')
+    f.close()
 
     nf = streamer(offline_file=offline_file, log_file=log_file)
     nf.to_csv(path=online_file)
