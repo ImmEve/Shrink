@@ -33,6 +33,7 @@ class FlowFilter(NFPlugin):
                         if flow.udps.result_url == -1:
                             flow.udps.result_url = statistics.mode(flow.udps.result_url_list)
                             with open(self.log_file, 'a') as f:
+                                f.write(time.strftime('%Y.%m.%d_%H:%M\n', time.localtime(time.time())))
                                 f.write(('Flow: {}.{}>{}.{}\n').format(flow.src_ip, flow.src_port, flow.dst_ip,
                                                                        flow.dst_port))
                                 f.write('Found the url for the video: ' + flow.udps.result_url + '\n')
@@ -40,6 +41,7 @@ class FlowFilter(NFPlugin):
                         elif flow.udps.result_url != statistics.mode(flow.udps.result_url_list):
                             flow.udps.result_url = statistics.mode(flow.udps.result_url_list)
                             with open(self.log_file, 'a') as f:
+                                f.write(time.strftime('%Y.%m.%d_%H:%M\n', time.localtime(time.time())))
                                 f.write(('Flow: {}.{}>{}.{}\n').format(flow.src_ip, flow.src_port, flow.dst_ip,
                                                                        flow.dst_port))
                                 f.write('Changed the url for the video: ' + flow.udps.result_url + '\n')
