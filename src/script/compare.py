@@ -60,7 +60,7 @@ def process_pcap(pcap, host_ip):
         sumlen = 0
         for j in flows[i]:
             sumlen = sumlen + j.data.data.ulen
-        if sumlen > 1 * 1024 * 1024:
+        if sumlen > 10 * 1024 * 1024:
             videoflows.append(i)
 
     P = {}
