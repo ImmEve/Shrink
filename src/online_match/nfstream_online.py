@@ -67,4 +67,6 @@ if __name__ == '__main__':
     f.close()
 
     nf = streamer(offline_file=offline_file, log_file=log_file)
-    nf.to_csv(path=online_file)
+    for stream in nf:
+        pass
+    # nf.to_csv(path=online_file)

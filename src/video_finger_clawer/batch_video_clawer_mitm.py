@@ -46,7 +46,7 @@ class Batch_clawer_mitm():
         self.video_parse = Video_parse(self.video_parse_conf_file_path)
 
         self.headers = {
-            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/119.0.0.0 Safari/537.36'}
+            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'}
         self.driver = self.chrome_driver_init()
         self.video_url = []  # 一批视频爬取URL
 
@@ -114,9 +114,7 @@ class Batch_clawer_mitm():
                 video_duration_s = int(time_data[0]) * 60 + int(time_data[1])
             else:
                 video_duration_s = int(time_data[0]) * 3600 + int(time_data[1]) * 60 + int(time_data[2])
-        duration_of_the_video = self.time_duration
-        if (video_duration_s < self.time_duration and video_duration_s > 0):
-            duration_of_the_video = video_duration_s - 10
+        duration_of_the_video = video_duration_s
         return duration_of_the_video
 
     # 单个URL爬取
@@ -189,19 +187,7 @@ class Batch_clawer_mitm():
         else:
             video_urls = parseHtml.xpath(index_page_xpath)
 
-        if self.mitm_flag == 1:
-            mitmProc.kill()
-
-        if int(len(video_urls) / batch_size) < batch_count:
-            batch_count = int(len(video_urls) / batch_size)
-
-        for i in range(0, batch_count):
-            self.video_url.clear()
-            self.video_url = video_urls[i * batch_size:((i + 1) * batch_size)]
-            if self.clawer_type == 0:
-                self.video_fingerprint_down(i, video_class)
-            else:
-                self.batch_down(i, video_class)
+        return video_urls
 
     # 获取视频分辨率信息
     def get_video_resolution(self):
@@ -327,8 +313,10 @@ class Batch_clawer_mitm():
         print(target_resolution)
         # 确定视频实际播放时长
         duration_of_the_video = self.clawer_video_duration(video_duration)
-        if duration_of_the_video < self.time_duration:
+        if duration_of_the_video < self.time_duration or duration_of_the_video > 2 * self.time_duration:
             return
+        else:
+            duration_of_the_video = self.time_duration
         # 对待采集分辨率列表进行逐一采集
         for cur_resolution in target_resolution:
             # 新建文件名
@@ -469,5 +457,3 @@ if __name__ == '__main__':
     conf_path = "C:/Shrink/bin/video_title_clawer.conf"
     clawer = Batch_clawer_mitm(conf_path)
     clawer.clawer_from_csv('test')
-
-    # clawer.get_url("liuxing","https://www.youtube.com/feed/trending?bp=6gQJRkVleHBsb3Jl")

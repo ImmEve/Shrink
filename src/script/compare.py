@@ -142,7 +142,6 @@ def write_finger(pcappath, host_ip, tmpfile, fingerfile):
             txt[i][14] = s_videoflows
             txt[i].remove(txt[i][4])
             txt[i].remove(txt[i][4])
-            print(pcap)
             continue
         for videoflow in videoflows:
             s_videoflows = s_videoflows + '/{}.{}>{}.{}'.format(videoflow[1], videoflow[3], videoflow[0], videoflow[2])
@@ -198,7 +197,7 @@ def fig_output(y1, y2, path):
 
 
 if __name__ == '__main__':
-    host_ip = '10.0.0.15'
+    host_ip = '192.168.32.38'
     tmpfile = 'C:/Shrink/data/fingerprint/analysis_tmp.csv'
     fingerfile = 'C:/Shrink/data/fingerprint/finger.csv'
     onlinefile = 'C:/Shrink/data/fingerprint/online.csv'

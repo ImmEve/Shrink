@@ -2,8 +2,8 @@
 import time
 from collections import deque
 
-from src.finger_match.bin_alg import bin_alg
-from src.finger_match.finger_preprocess import data_Process
+import bin_alg
+from finger_preprocess import data_Process
 
 
 class Match_alg():
