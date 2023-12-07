@@ -1,0 +1,171 @@
+2023.11.14_14:38
+Flow: 192.168.32.38.63694>142.251.84.71.443
+Found the url for the video: https://www.youtube.com//watch?v=_3Z3FpeFHDQ
+√
+
+2023.11.14_14:46
+Flow: 192.168.32.38.59650>142.251.84.71.443
+Found the url for the video: https://www.youtube.com//watch?v=_3Z3FpeFHDQ
+√
+
+2023.11.14_14:47
+Flow: 192.168.32.38.59650>142.251.84.71.443
+Changed the url for the video: https://www.youtube.com//watch?v=4dESmtswQ58
+×
+
+2023.11.14_14:51
+Flow: 192.168.32.38.64829>173.194.4.232.443
+Found the url for the video: https://www.youtube.com//watch?v=24Mi5BlxTRM
+√
+
+2023.11.14_14:59
+Flow: 192.168.32.38.56958>74.125.96.38.443
+Found the url for the video: https://www.youtube.com//watch?v=01dKYdL_yQE
+√
+
+2023.11.14_15:12
+Flow: 192.168.32.38.49231>74.125.171.38.443
+Found the url for the video: https://www.youtube.com//watch?v=2OSXrsmL4H8
+√
+
+2023.11.14_15:28
+Flow: 192.168.32.38.60639>74.125.164.170.443
+Found the url for the video: https://www.youtube.com//watch?v=2sfP_FgV_BI
+√
+
+2023.11.14_15:37
+Flow: 192.168.32.38.50560>74.125.164.232.443
+Found the url for the video: https://www.youtube.com//watch?v=1fWefVqnZAQ
+×
+
+2023.11.14_15:46
+Flow: 192.168.32.38.50524>74.125.164.201.443
+Found the url for the video: https://www.youtube.com//watch?v=2sfP_FgV_BI
+√
+
+2023.11.14_15:48
+Flow: 192.168.32.38.59585>74.125.164.201.443
+Found the url for the video: https://www.youtube.com//watch?v=39YC99eGeBI
+√
+
+2023.11.14_15:56
+Flow: 192.168.32.38.63822>74.125.101.136.443
+Found the url for the video: https://www.youtube.com//watch?v=3SwR5O9mlLk
+√
+
+2023.11.14_16:08
+Flow: 192.168.32.38.64181>74.125.96.38.443
+Found the url for the video: https://www.youtube.com//watch?v=0yCy43o535k
+√
+
+2023.11.14_16:19
+Flow: 192.168.32.38.58363>74.125.96.42.443
+Found the url for the video: https://www.youtube.com//watch?v=_p7MObjrTF4
+√
+
+2023.11.14_16:25
+Flow: 192.168.32.38.53040>74.125.101.136.443
+Found the url for the video: https://www.youtube.com//watch?v=4dESmtswQ58
+√
+
+2023.11.14_17:03
+Flow: 192.168.32.38.58256>74.125.96.40.443
+Found the url for the video: https://www.youtube.com//watch?v=0oJUpbPL6Dg
+√
+
+2023.11.14_20:15
+Flow: 192.168.32.38.63189>172.217.145.73.443
+Found the url for the video: https://www.youtube.com//watch?v=4Z5W6rSmJbo
+√
+
+2023.11.14_20:22
+Flow: 192.168.32.38.58412>74.125.164.170.443
+Found the url for the video: https://www.youtube.com//watch?v=1t8WpotDMt4
+×
+
+2023.11.14_20:28
+Flow: 192.168.32.38.57804>74.125.164.170.443
+Found the url for the video: https://www.youtube.com//watch?v=51bF3tzEkLQ
+√
+
+2023.11.15_10:12
+Flow: 192.168.32.38.61752>173.194.4.10.443
+Found the url for the video: https://www.youtube.com//watch?v=0EwO1ir46nk
+×
+
+2023.11.15_10:27
+Flow: 192.168.32.38.53721>74.125.164.199.443
+Found the url for the video: https://www.youtube.com//watch?v=59QqGdifBiM
+√
+
+2023.11.15_10:41
+Flow: 192.168.32.38.51538>74.125.96.40.443
+Found the url for the video: https://www.youtube.com//watch?v=5kAhpOncwUg
+√
+
+2023.11.15_10:45
+Flow: 192.168.32.38.56787>74.125.96.40.443
+Found the url for the video: https://www.youtube.com//watch?v=5kAhpOncwUg
+√
+
+2023.11.15_10:53
+Flow: 192.168.32.38.49251>173.194.4.9.443
+Found the url for the video: https://www.youtube.com//watch?v=5rBjYpAqmjI
+√
+
+2023.11.15_14:52
+Flow: 192.168.32.38.63670>74.125.101.135.443
+Found the url for the video: https://www.youtube.com//watch?v=67_sVQW_VR0
+√
+
+2023.11.15_15:06
+Flow: 192.168.32.38.51226>74.125.101.170.443
+Found the url for the video: https://www.youtube.com//watch?v=67_sVQW_VR0
+√
+
+2023.11.15_15:39
+Flow: 192.168.32.38.50117>172.217.145.70.443
+Found the url for the video: https://www.youtube.com//watch?v=14aYHc7ybu0
+√
+
+2023.11.15_15:54
+Flow: 192.168.61.10.2120>192.168.32.38.3389
+Found the url for the video: https://www.youtube.com//watch?v=5rBjYpAqmjI
+√
+
+2023.11.15_20:04
+Flow: 192.168.32.38.54720>74.125.164.230.443
+Found the url for the video: https://www.youtube.com//watch?v=5WjhmWDb0pk
+√
+
+2023.11.23_17:03
+Flow: 192.168.32.38.60420>74.125.101.135.443
+Found the url for the video: https://www.youtube.com//watch?v=67_sVQW_VR0
+×
+
+2023.11.23_17:59
+Flow: 192.168.32.38.62149>173.194.4.8.443
+Found the url for the video: https://www.youtube.com//watch?v=cFEwOZd2y-E
+√
+
+2023.11.23_19:14
+Flow: 192.168.32.38.57071>173.194.4.39.443
+Found the url for the video: https://www.youtube.com//watch?v=06kFq1QF5-s
+×
+
+2023.11.23_19:19
+Flow: 192.168.32.38.62509>173.194.4.39.443
+Found the url for the video: https://www.youtube.com//watch?v=cwxtUzIa2pU
+√
+
+2023.11.23_19:30
+Flow: 192.168.32.38.53893>173.194.4.8.443
+Found the url for the video: https://www.youtube.com//watch?v=0EwO1ir46nk
+×
+
+2023.11.23_21:19
+Flow: 192.168.32.38.56954>142.251.84.41.443
+Found the url for the video: https://www.youtube.com//watch?v=6lsvcemSRc0
+√
+
+34条流，31个视频，precision = 27 / 34 = 79.41%
