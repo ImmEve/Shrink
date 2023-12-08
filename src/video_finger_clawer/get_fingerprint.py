@@ -56,7 +56,6 @@ class Finger():
     def from_root_path_get_finger(self, root_path):
         Filelist, _ = self.get_filelist(root_path + "/mitm")
         for path in Filelist:
-            # print(path)
             self.finger_extract(path)
 
     # 从记录文件路径的文件中依次读取文件处理指纹
@@ -67,7 +66,6 @@ class Finger():
             Filelist, _ = self.get_filelist(root_path)
             # 对每一个视频的mitm文件进行处理
             for path in Filelist:
-                # print(path)
                 try:
                     self.work_stream(path)
                 except:
@@ -76,7 +74,6 @@ class Finger():
                 # 提取指纹信息，处理单位是一个视频的文件
 
     def finger_extract(self, path):
-        #
         # key为itag，value为list，list中每一个元素为[range_beg,range_end,len,5tuple,video/audio]
         video_itag_dict = {}
         file_paths, file_names = self.get_filelist(path)
@@ -104,13 +101,9 @@ class Finger():
                 if request_head.find("mime=video") != -1:
                     video_itag_val = Video_itag_val(video_range_beg, video_range_end,
                                                     int(video_range_end - video_range_beg + 1), file_names[i], "video")
-                    # video_itag_val=Video_itag_val(video_range_beg,video_range_end,int(lines[0]),file_names[i],"video")
                 elif request_head.find("mime=audio") != -1:
-                    # video_itag_val=Video_itag_val(video_range_beg,video_range_end,int(lines[0]),file_names[i],"audio")
                     continue
                 else:
-                    # print(response_head)
-                    # print ("\n error!!!!!!!!!!!!!!!!!\n")
                     continue
 
                 if itag not in video_itag_dict:
@@ -211,18 +204,6 @@ class Finger():
                                                                                                    mix_stream_count,
                                                                                                    miss_chunk_count))
 
-    '''
-    #提取视频指纹序列
-    def get_finger(self,video_itag_dict):
-        finger_dick={}
-        for itag in video_itag_dict:
-            video_itag_val=[]
-            for i in range(0,len(video_itag_dict[itag])):
-                video_itag_val.append(video_itag_dict[itag][i][2])
-            finger_dick[itag]=video_itag_val
-        return finger_dick
-    '''
-
     # 对乱序的视频指纹块进行排序,处理单位是一个视频的文件
     def chunk_sort(self, video_itag_dict):
         for itag in video_itag_dict:
@@ -259,19 +240,6 @@ class Finger():
                         continue
                 else:
                     tmp_list.append(video_itag_dict[itag][i])
-                '''
-                if video_itag_dict[itag][i].range_beg==video_itag_dict[itag][i+1].range_beg:
-                    if i+2<len(video_itag_dict[itag]):
-                        if video_itag_dict[itag][i].range_end+1==video_itag_dict[itag][i+2].range_beg:
-                            video_itag_dict[itag][i],video_itag_dict[itag][i+1]=video_itag_dict[itag][i+1],video_itag_dict[itag][i]
-                            continue
-                        if video_itag_dict[itag][i+1].range_end+1==video_itag_dict[itag][i+2].range_beg:
-                            continue
-                    if tuple_dist[video_itag_dict[itag][i].stream_tuple]>tuple_dist[video_itag_dict[itag][i+1].stream_tuple]:
-                        video_itag_dict[itag][i],video_itag_dict[itag][i+1]=video_itag_dict[itag][i+1],video_itag_dict[itag][i]
-                else:
-                    tmp_list.append(video_itag_dict[itag][i])
-                '''
             tmp_list.append(video_itag_dict[itag][len(video_itag_dict[itag]) - 1])
             video_itag_dict[itag] = tmp_list
         return video_itag_dict
@@ -281,9 +249,6 @@ class Finger():
         # 指纹验证结果字典,key为itag，值为[是否缺首块，块断开的次数，使用流的数量，交叉流数量，块的数量，连续块列表]
         finger_valid_dict = {}
         for itag in video_itag_dict:
-            # 不统计音频流
-            # if video_itag_dict[itag][0].chunk_type=='audio':
-            #    continue
             tuple_dict = {}
             chunk_miss_flag = 0
             miss_beg_flag = 0
@@ -326,10 +291,8 @@ class Finger():
         video_itag_dict = self.chunk_sort(video_itag_dict)
         finger_valid_dict = self.finger_valid(video_itag_dict)
         self.get_video_url(path)
-        # finger_dick=self.get_finger(viddeo_itag_dict)
         self.video_itag_dict_list[path] = video_itag_dict
         self.finger_valid_dict_list[path] = finger_valid_dict
-        # self.record_finger(path,video_itag_dict)
 
 
 if __name__ == '__main__':

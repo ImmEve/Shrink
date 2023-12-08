@@ -1,6 +1,5 @@
 # 将指纹库与在线指纹进行清理（去除音频块），标注，并构建为类，用于后续的匹配算法
 from collections import deque
-
 import matplotlib.pyplot as plt
 import numpy as np
 
@@ -105,11 +104,6 @@ class data_Process():
             # 验证是否出现在线流五元组对应多个目标流五元组的情况,仅记录一对一的情况
             if len(tmp) == 2:
                 self.o_g_p_relation_list.append(o_g_p_relation)
-                # 统计仅用一条流传输视频的数量
-                # if len(o_g_p_relation.ground_truth_stream.tuple_list)==1:
-                #    j +=1
-        # print (len(self.offline_chunk_list))
-        # print (j)
 
     # 分析音视频块的大小分布
     def chunk_plt(self, video_fingers, audio_fingers):
@@ -178,23 +172,6 @@ class data_Process():
                     state_transition_dict[relation_key] += 1
                 bin_relation_que.popleft()
             self.offline_chunk_list[index_i].state_transition_matrix = state_transition_dict
-        '''
-        conflict_count=0
-        all_count=0
-        for cur_chunk in self.offline_chunk_list:
-            cur_state_transition_matrix=cur_chunk.state_transition_matrix
-            if cur_state_transition_matrix=='' or len(cur_state_transition_matrix)==0:
-                continue
-            all_count +=1
-            match_count=0
-            for offline_chunk in self.offline_chunk_list:
-                for on_key,on_val in cur_state_transition_matrix.items():
-                    if on_key in offline_chunk.state_transition_matrix:
-                        match_count +=1
-                        break
-            if match_count>=2:
-                conflict_count +=1
-        '''
         conflict_count = 0
         all_count = 0
         for cur_chunk in self.offline_chunk_list:

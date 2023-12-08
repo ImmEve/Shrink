@@ -2,7 +2,6 @@ import math
 import pickle
 import time
 from collections import deque
-
 from finger_preprocess import data_Process
 
 
@@ -30,18 +29,13 @@ class Markov_alg():
         all_count, true_count, acc = self.pred_performance()
         self.result[1] = [error_count, online_short_count, all_count, true_count, acc,
                           true_count / (error_count + all_count)]
-        # print('{},{},{},{},{},{}'.format(error_count, online_short_count, all_count, true_count, acc,
-        #                                  true_count / (error_count + all_count)))
 
         error_count, online_short_count = self.online_match(low_orders, low_bins_count, low_win_size, 1)
         all_count, true_count, acc = self.pred_performance()
         self.result[2] = [error_count, online_short_count, all_count, true_count, acc,
                           true_count / (error_count + all_count)]
-        # print('{},{},{},{},{},{}'.format(error_count, online_short_count, all_count, true_count, acc,
-        #                                  true_count / (error_count + all_count)))
 
         self.result[0] = [high_orders, high_win_size, high_orders + high_win_size]
-        # print('{},{},{}'.format(high_orders + 1, high_orders + high_win_size, self.acc))
 
     # 记录指纹库的所有转移概率
     def state_transition_calculate(self, bins_count, orders):
@@ -89,11 +83,6 @@ class Markov_alg():
             self.offline_chunk_list[index_i].state_transition_matrix = state_transition_dict
 
         for transition, transition_prob in global_tran_prob_table.items():
-            '''
-            prob=(1-transition_prob*1000/word_count)
-            if prob<0:
-                prob=0.00001
-            '''
             prob = math.log(word_count / (transition_prob + 1))
             global_tran_prob_table[transition] = prob
         return global_tran_prob_table
@@ -209,7 +198,6 @@ class Markov_alg():
             time_sum += time_end - time_start
             time_count += 1
 
-        # print (time_sum,time_count,time_sum/time_count)
         return error_count, online_short_count
 
     # 在线匹配过程中streamID与指纹库类的对应关系

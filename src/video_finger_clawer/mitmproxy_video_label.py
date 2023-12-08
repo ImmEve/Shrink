@@ -1,7 +1,6 @@
 import configparser
 import multiprocessing
 import os.path
-
 import m_ping
 
 
@@ -46,9 +45,7 @@ class label_core:
     def response(self, flow):
         # 获取请求和响应对象
         request = flow.request
-        # response=flow.response
         video_flag = 1
-        # info = ctx.log.info # 实例化输出类
 
         # 视频流标注
         for i in range(len(self.video_request_fea)):
@@ -58,15 +55,9 @@ class label_core:
                 video_flag = 0
 
         if video_flag == 1:
-            # info('---------------------response---------------------')
-            # info(flow.server_conn.sockname)#source IP+port
-            # info(flow.server_conn.peername)#destination IP+port
-            # info(request.host)
-            # info(str(response.headers))
             tuple = str(flow.server_conn.sockname)[2:-1].replace("\', ", ",") + "-" + str(flow.server_conn.peername)[
                                                                                       2:-1].replace("\', ",
                                                                                                     ",")  # such as 172.16.9.38,58163-59.44.45.201,4483
-            # info(tuple)
             mitm_record_file_path = self.mitm_record_path + tuple
             if self.ping_record_flag == 1:
                 ping_record_file_path = self.ping_record_path + tuple
@@ -81,7 +72,6 @@ class label_core:
                                                                    "interval": self.ping_interval,
                                                                    "count": self.ping_count, "size": self.ping_size})
                     ping_process.start()
-                    # m_ping.m_ping_fun (record_path=ping_record_file_path,dest_addr=dst_ip ,timeout=0.1 ,interval = 0.001 ,count=10,size=1)
             # 创建文件，并把请求URL、响应头部、长度写入
             self.record_txt(flow, mitm_record_file_path)
 

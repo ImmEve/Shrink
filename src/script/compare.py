@@ -1,7 +1,6 @@
 import csv
 import os
 import socket
-
 import dpkt
 import matplotlib.pyplot as plt
 

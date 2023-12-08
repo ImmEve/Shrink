@@ -1,7 +1,6 @@
 # 指纹匹配算法
 import time
 from collections import deque
-
 import bin_alg
 from finger_preprocess import data_Process
 
@@ -33,8 +32,6 @@ class Match_alg():
         for i in range(len(self.o_g_p_relation_list)):
             R = [0]
             for j in range(1, len(self.o_g_p_relation_list[i].original_stream.finger_list)):
-                # pre = (self.o_g_p_relation_list[i].original_stream.finger_list[j - 1] - 1119) / 1.00135177
-                # cur = (self.o_g_p_relation_list[i].original_stream.finger_list[j] - 1119) / 1.00135177
                 pre = self.o_g_p_relation_list[i].original_stream.finger_list[j - 1] * 0.97214644 - 1145.44281353
                 cur = self.o_g_p_relation_list[i].original_stream.finger_list[j] * 0.97214644 - 1145.44281353
                 r = (cur - pre) / pre
@@ -91,20 +88,14 @@ class Match_alg():
                 if len(offline_chunk.finger_list) < wind_size:  # or len(offline_chunk.finger_list)<len(online_chunk.finger_list):
                     continue
                 for i in range(0, (len(offline_chunk.finger_list) - wind_size)):
-                    # for i in range(0,(len(offline_chunk.finger_list)-len(online_chunk.finger_list)+1)):
                     cur_dis = 0
                     for j in range(0, wind_size):
                         online_chunk_size = online_chunk.finger_list[j] * 0.97214644 - 1145.44281353
-                        # 在线一定是要大于离线指纹库的
-                        # if online_chunk.finger_list[j]<offline_chunk.finger_list[j+i]:
-                        #    cur_dis=99999999999
-                        #    break
                         cur_dis += abs(online_chunk_size - offline_chunk.finger_list[j + i])
                     if cur_dis < min_dis:
                         min_dis = cur_dis
                         min_chunk = offline_chunk
             if min_chunk == None:
-                # print("error")
                 time_end = time.time()
                 time_sum += time_end - time_start
                 time_count += 1
@@ -113,7 +104,6 @@ class Match_alg():
             time_end = time.time()
             time_sum += time_end - time_start
             time_count += 1
-        # print (time_sum,time_count,time_sum/time_count)
         return small_count
 
     # 一阶马尔可夫
@@ -137,7 +127,6 @@ class Match_alg():
                 if bin_index_pre == -1:
                     bin_index_pre = bin_index_cur
                     continue
-                # print(bin_index_pre,bin_index_cur)
                 res_matrix[bin_index_pre][bin_index_cur] += 1
                 bin_index_pre = bin_index_cur
             self.offline_chunk_list[index_i].state_transition_matrix = res_matrix
@@ -175,7 +164,6 @@ class Match_alg():
                     continue
                 # 统计转移概率
                 for i in range(0, len(online_metrix_index)):
-                    # print (online_metrix_index[i][0],online_metrix_index[i][1])
                     cur_prob += offline_chunk.state_transition_matrix[online_metrix_index[i][0]][
                         online_metrix_index[i][1]]
                 cur_prob = cur_prob / off_chunk_len
@@ -183,7 +171,6 @@ class Match_alg():
                     max_prob = cur_prob
                     target_chunk = offline_chunk
             if target_chunk == None:
-                # print("error")
                 continue
             self.o_g_p_relation_list[index_j].pred_stream = target_chunk
 
@@ -212,8 +199,6 @@ class Match_alg():
                 if tuples in error_bins_tuples_dict:
                     self.offline_chunk_list[index_i].state_transition_matrix = {}
                     break
-
-            # 当序列小于多少时不参与匹配
 
             # 用一个队列记录n阶的桶关系
             bin_relation_que = deque()
@@ -286,15 +271,6 @@ class Match_alg():
                     bin_index_cur = 0
                 else:
                     bin_index_cur = int((chunk_bias - self.video_chunk_size_min) / bin_size)
-                # 静态偏置
-                '''
-                if on_chunk-bias>=self.video_chunk_size_max:
-                    bin_index_cur=bins_count-1
-                elif on_chunk-bias<=self.video_chunk_size_min:
-                    bin_index_cur=0
-                else:
-                    bin_index_cur=int((on_chunk-bias-self.video_chunk_size_min)/bin_size)
-                '''
 
                 # 记录转移序列
                 online_bin_relation_que.append(bin_index_cur)
@@ -336,7 +312,6 @@ class Match_alg():
 
             # print(time_end-time_start)
             if target_chunk == None:
-                # print("error")
                 error_count += 1
                 self.o_g_p_relation_list[index_j].zero_prob = 1
                 time_end = time.time()
@@ -348,7 +323,6 @@ class Match_alg():
             time_sum += time_end - time_start
             time_count += 1
 
-        # print (time_sum,time_count,time_sum/time_count)
         return error_count, online_short_count
 
     # 计算预测结果指标
@@ -363,14 +337,13 @@ class Match_alg():
                 true_count += 1
             else:
                 _ = 1
-        # print ('all count {}; true count {}; acc {}'.format(all_count,true_count,true_count/all_count))
         if all_count == 0:
             return all_count, true_count, 0
         else:
             return all_count, true_count, true_count / all_count
 
     # 去除错误分桶所在的流后进行匹配性能评估
-    def pred_performance_deFalseStream():
+    def pred_performance_deFalseStream(self):
         bin_alg_class = bin_alg.Bin_alg("./data/chunk_list/online_encrypted_finger.csv",
                                         "./data/chunk_list/offline_chunk_list.csv")
         on_off_bin_list = bin_alg_class.dynamic_res_average_bins_div(90)
@@ -401,13 +374,11 @@ if __name__ == '__main__':
 
     for i in range(1, 6, 1):
         for j in range(4000, 7000, 1000):
-            # match_alg.pred_clean()
             match_alg = Match_alg('D:/project/quic_video_clawer/data/fingerprint/online.csv',
                                   'D:/project/quic_video_clawer/data/fingerprint/finger.csv', offline_audio_thd)
             error_count, online_short_count = match_alg.markov_hight_order(bins_count=j, orders=i, win_size=1,
                                                                            de_mix_stream_flag=1)
             all_count, true_count, acc = match_alg.pred_performance()
-            # print('{},{},{},{},{},{},{},{}'.format(i,j,error_count,online_short_count,all_count,true_count,acc,true_count/(error_count+all_count)))
             error_count, online_short_count = match_alg.markov_hight_order(bins_count=j, orders=1, win_size=3,
                                                                            mutil_order_flag=1, de_mix_stream_flag=1)
             all_count, true_count, acc = match_alg.pred_performance()
@@ -418,10 +389,8 @@ if __name__ == '__main__':
     for i in bin_count:
         for j in range(1, 11, 1):
             for k in range(1, 10, 1):
-                # for k in win_size:
                 match_alg = Match_alg('D:/project/quic_video_clawer/data/fingerprint/online.csv',
                                       'D:/project/quic_video_clawer/data/fingerprint/finger.csv', offline_audio_thd)
-                # match_alg.slide_wind(10)
                 error_count, online_short_count = match_alg.markov_hight_order(bins_count=i, orders=j, win_size=k)
                 all_count, true_count, acc = match_alg.pred_performance()
                 print(

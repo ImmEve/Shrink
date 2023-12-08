@@ -3,13 +3,11 @@ import configparser
 import os.path
 import subprocess
 import time
-
 from lxml import etree
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
-
 from video_parse_conf import Video_parse
 
 
@@ -57,11 +55,8 @@ class Batch_clawer_mitm():
     def chrome_driver_init(self):
         options = webdriver.ChromeOptions()
         service = Service(self.chrome_driver_path)
-        # options.add_argument('--disable-gpu')
         options.add_argument("--user-data-dir=" + self.chrome_user_data_path)
-        # options.add_argument("--auto-open-devtools-for-tabs")
         driver = webdriver.Chrome(service=service, options=options)
-        # driver = webdriver.Chrome(executable_path=self.chrome_driver_path, chrome_options=options)
         driver.set_window_size(1000, 30000)
         wait = WebDriverWait(driver, 100)
         return driver
@@ -94,7 +89,6 @@ class Batch_clawer_mitm():
         duration_xpath = self.video_parse.duration_xpath
         try:
             if duration_xpath != '':
-                # video_duration=self.driver.find_element(By.XPATH,duration_xpath).text
                 html = self.driver.page_source.encode("utf-8", "ignore")
                 parseHtml = etree.HTML(html)
                 video_duration = parseHtml.xpath(duration_xpath)
@@ -102,7 +96,6 @@ class Batch_clawer_mitm():
             video_duration = -1
             print('get video duration error')
 
-        # video_duration=self.driver.find_element(By.XPATH,duration_xpath).text
         return video_duration
 
     # 确定视频实际播放时长
@@ -163,7 +156,6 @@ class Batch_clawer_mitm():
             mitmProc = subprocess.Popen(mitmCall, executable=self.mitmproxy_path)
         self.loop_get_url(main_url)
         time.sleep(5)
-        # driver.execute_script('window.scrollTo(0,document.body.scrollHeight)')
         for i in range(0, 100):
             self.driver.execute_script('window.scrollBy(0,1000)')
             time.sleep(1)
@@ -177,7 +169,6 @@ class Batch_clawer_mitm():
             raw_video_urls = parseHtml.xpath(index_page_xpath)
             for url in raw_video_urls:
                 video_urls.append("https:" + str(url))
-                # video_urls.append("https://www.bilibili.com"+str(url))
         elif self.video_parse.video_server_name == 'youtube':
             raw_video_urls = parseHtml.xpath(index_page_xpath)
             # 跳过短视频
@@ -195,18 +186,18 @@ class Batch_clawer_mitm():
         try:
             if self.video_parse.video_server_name == 'youtube':
                 # 点击设置
-                self.driver.find_element(By.XPATH, '//*[@aria-controls="ytp-id-17"]').click()
+                self.driver.find_element(By.XPATH, '//*[@class="ytp-button ytp-settings-button"]').click()
                 # 点击画质
-                self.driver.find_element(By.XPATH, '//*[@id="ytp-id-17"]//*[@class="ytp-menu-label-secondary"]').click()
+                self.driver.find_element(By.XPATH,
+                                         '//*[@class="ytp-popup ytp-settings-menu"]//*[@class="ytp-menu-label-secondary"]').click()
                 time.sleep(0.5)
                 # 获取分辨率信息
-                # info=self.driver.find_element(By.XPATH,'//*[@id="ytp-id-17"]//*[@class="ytp-menuitem-label"]/div/span').text
                 html = self.driver.page_source.encode("utf-8", "ignore")
                 parseHtml = etree.HTML(html)
                 video_resolution = parseHtml.xpath(
-                    '//*[@id="ytp-id-17"]//*[@class="ytp-menuitem-label"]/div/span/text()')
+                    '//*[@class="ytp-popup ytp-settings-menu"]//*[@class="ytp-menuitem-label"]/div/span/text()')
                 # 复原
-                self.driver.find_element(By.XPATH, '//*[@aria-controls="ytp-id-17"]').click()
+                self.driver.find_element(By.XPATH, '//*[@class="ytp-button ytp-settings-button"]').click()
             else:
                 pass
         except:
@@ -218,16 +209,17 @@ class Batch_clawer_mitm():
     def video_resolution_switch(self, video_resolution):
         if self.video_parse.video_server_name == 'youtube':
             # 点击设置
-            self.driver.find_element(By.XPATH, '//*[@aria-controls="ytp-id-17"]').click()
+            self.driver.find_element(By.XPATH, '//*[@class="ytp-button ytp-settings-button"]').click()
             # 点击画质
-            self.driver.find_element(By.XPATH, '//*[@id="ytp-id-17"]//*[@class="ytp-menu-label-secondary"]').click()
+            self.driver.find_element(By.XPATH,
+                                     '//*[@class="ytp-popup ytp-settings-menu"]//*[@class="ytp-menu-label-secondary"]').click()
             time.sleep(0.5)
             # 切换分辨率
-            element_path = '//*[@id="ytp-id-17"]//*[@class="ytp-menuitem-label"]/div/span[text()=\'' + str(
+            element_path = '//*[@class="ytp-popup ytp-settings-menu"]//*[@class="ytp-menuitem-label"]/div/span[text()=\'' + str(
                 video_resolution).strip() + '\']'
             self.driver.find_element(By.XPATH, element_path).click()
             # 复原
-            self.driver.find_element(By.XPATH, '//*[@aria-controls="ytp-id-17"]').click()
+            self.driver.find_element(By.XPATH, '//*[@class="ytp-button ytp-settings-button"]').click()
 
     # 目标分辨率与存在视频本身包含的分辨率取交集，作为最后的捕获分辨率
     def clawer_resolution_intersection(self, online_video_resolution):
@@ -370,7 +362,6 @@ class Batch_clawer_mitm():
                     os.makedirs(self.root_path + video_name + "/mitm/")
                 if not os.path.exists(new_mitm_path):
                     os.makedirs(new_mitm_path)
-                # os.rename(self.mitm_record_path, new_mitm_path)
 
             # 提取chrome开发者工具的network流量
             response_headers = self.driver.execute_script("return window.performance.getEntries()")
@@ -456,4 +447,4 @@ class Batch_clawer_mitm():
 if __name__ == '__main__':
     conf_path = "C:/Shrink/bin/video_title_clawer.conf"
     clawer = Batch_clawer_mitm(conf_path)
-    clawer.clawer_from_csv('test')
+    clawer.clawer_from_csv('test1')

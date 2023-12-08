@@ -11,15 +11,6 @@ class Bin_alg():
         self.online_chunk_dict = self.get_dict_data(online_chunk_path)
         self.offline_chunk_dict = self.get_dict_data(offline_chunk_path)
         self.on_off_chunk_match()
-        # self.on_off_chunk_record()
-        # self.on_off_chunk_diffvall_record()
-
-        # self.res_avg_bin_analysis()
-
-        # self.chunksize_res_relation_analysis()
-        # on_off_bin_list=self.dynamic_res_average_bins_div(100)
-        # match_success_count=self.bin_alg_eval(on_off_bin_list)
-        # print(match_success_count)
 
     # 按五元组获取块信息
     def get_dict_data(self, path):
@@ -110,9 +101,7 @@ class Bin_alg():
                 match_success_count += 1
             else:
                 error_tuples_dict[datas[2]] = 1
-                # print(datas[0]-datas[1],datas[2])
         print(len(on_off_bin_list), len(on_off_bin_list) - match_success_count, len(error_tuples_dict))
-        # print('all count={},match_success_count={},bin_count={}'.format(len(on_off_bin_list),match_success_count,len(bin_count)))
         return match_success_count
 
     # 获得错误分桶的块所在五元组信息，并记录到字典中
@@ -184,13 +173,6 @@ class Bin_alg():
             match_success_count = self.bin_alg_eval(on_off_bin_list)
             record_file.write(str(i) + ',' + str(38008 - match_success_count) + ',')
             record_file.write('\n')
-            '''static
-            for j in range(0,6000,1000):
-                on_off_bin_list=self.static_res_average_bins_div(i,j)
-                match_success_count=self.bin_alg_eval(on_off_bin_list)
-                record_file.write(str(match_success_count)+',')
-            record_file.write('\n')
-            '''
 
     # 分析块大小与视频块对差值之间的关系
     def chunksize_res_relation_analysis(self):
@@ -209,21 +191,5 @@ class Bin_alg():
             X.append(datas[0])
             Y.append(datas[1])
         plt.plot(X, Y)
-        # plt.show()
         for i in range(0, len(X)):
             print(str(X[i]) + ',' + str(Y[i]))
-        # bias=0.00135177*offline_chunk+1119
-
-
-if __name__ == '__main__':
-    bin_alg = Bin_alg('./data/chunk_list/online_encrypted_finger_seq.csv', './data/chunk_list/offline_chunk_list.csv')
-    bin_alg.chunksize_res_relation_analysis()
-
-    # on_off_bin_list=bin_alg.dynamic_res_average_bins_div(820)
-    # match_success_count=bin_alg.bin_alg_eval(on_off_bin_list)
-
-    # bin_alg.res_avg_bin_analysis()
-
-    # bin_alg.on_off_chunk_diffvall_record()
-
-    # bin_alg.on_off_chunk_record()

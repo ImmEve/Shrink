@@ -1,11 +1,9 @@
 import csv
 import os
 import pickle
-
 import matplotlib.pyplot as plt
 import numpy as np
 from sklearn.linear_model import LinearRegression
-
 from compare import process_pcap, request_chunk, fig_output
 
 

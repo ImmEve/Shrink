@@ -126,11 +126,6 @@ class Markov_alg():
             self.offline_chunk_list[index_i].state_transition_matrix = state_transition_dict
 
         for transition, transition_prob in global_tran_prob_table.items():
-            '''
-            prob=(1-transition_prob*1000/word_count)
-            if prob<0:
-                prob=0.00001
-            '''
             prob = math.log(word_count / (transition_prob + 1))
             global_tran_prob_table[transition] = prob
         return global_tran_prob_table
@@ -246,15 +241,3 @@ class Markov_alg():
         for offline_chunk in self.offline_chunk_list:
             if offline_chunk.streamID == self.pred_stream:
                 self.pred_stream = offline_chunk
-
-
-if __name__ == '__main__':
-    online_chunk_list = [803190, 741966, 660735, 1856581, 2152192, 1676730, 1675442, 2029459, 2152239, 1823539, 2153984,
-                         1869170, 1876726, 1968964, 1702254, 1678635, 2153997, 2038598]
-    offline_file = 'data/fingerprint/finger.csv'
-    offline_audio_thd = 600 * 1024
-    high_orders, high_bins_count, high_win_size = 5, 21, 10
-    low_orders, low_bins_count, low_win_size = 1, 21, 14
-    markov_alg = Markov_alg(online_chunk_list, offline_file, offline_audio_thd, high_orders, high_bins_count,
-                            high_win_size, low_orders, low_bins_count, low_win_size)
-    print(markov_alg.pred_stream.video_url)
