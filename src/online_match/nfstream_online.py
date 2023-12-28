@@ -15,13 +15,15 @@ class FlowFilter(NFPlugin):
         flow.udps.segment = 0
         flow.udps.result_url_list = []
         flow.udps.result_url = -1
+        flow.udps.whether_video = False
 
     def on_update(self, packet, flow):
         flow.udps.packet_datasize.append(packet.raw_size - 34)
         if packet.src_ip == flow.src_ip and packet.raw_size - 34 > 100:
             if flow.udps.segment > 600 * 1024:
                 flow.udps.chunk.append(flow.udps.segment)
-                if sum(flow.udps.chunk) > 10 * 1024 * 1024:
+                if sum(flow.udps.chunk) > 8 * 1024 * 1024:
+                    flow.udps.whether_video = True
                     offline_audio_thd = 600 * 1024
                     high_orders, high_bins_count, high_win_size = 5, 160, 21
                     low_orders, low_bins_count, low_win_size = 1, 160, 14
@@ -51,10 +53,19 @@ class FlowFilter(NFPlugin):
         elif packet.dst_ip == flow.src_ip:
             flow.udps.segment = flow.udps.segment + packet.raw_size - 34
 
+    def on_expire(self, flow):
+        if flow.udps.whether_video and flow.udps.result_url == -1:
+            with open(self.log_file, 'a') as f:
+                f.write(time.strftime('%Y.%m.%d_%H:%M\n', time.localtime(time.time())))
+                f.write(('Flow: {}.{}>{}.{}\n').format(flow.src_ip, flow.src_port, flow.dst_ip, flow.dst_port))
+                f.write('Did not find the url for the video\n')
+                f.write('\n')
+
 
 def streamer(offline_file, log_file):
     streamer = NFStreamer(source='Intel(R) Ethernet Connection I217-V',
                           udps=FlowFilter(offline_file=offline_file, log_file=log_file))
+    #streamer = NFStreamer(source='Intel(R) Ethernet Connection I217-V')
     return streamer
 
 
@@ -67,6 +78,6 @@ if __name__ == '__main__':
     f.close()
 
     nf = streamer(offline_file=offline_file, log_file=log_file)
-    for stream in nf:
-        pass
-    # nf.to_csv(path=online_file)
+    #for stream in nf:
+    #    pass
+    nf.to_csv(path=online_file)
