@@ -7,6 +7,8 @@ class FlowFilter(NFPlugin):
     def __init__(self, offline_file, log_file):
         self.offline_file = offline_file
         self.log_file = log_file
+        self.video_filter = 8
+        self.result_filter = 5
 
     def on_init(self, packet, flow):
         flow.udps.packet_datasize = []
@@ -18,11 +20,12 @@ class FlowFilter(NFPlugin):
         flow.udps.whether_video = False
 
     def on_update(self, packet, flow):
+
         flow.udps.packet_datasize.append(packet.raw_size - 34)
         if packet.src_ip == flow.src_ip and packet.raw_size - 34 > 100:
             if flow.udps.segment > 600 * 1024:
                 flow.udps.chunk.append(flow.udps.segment)
-                if sum(flow.udps.chunk) > 8 * 1024 * 1024:
+                if sum(flow.udps.chunk) > self.video_filter * 1024 * 1024:
                     flow.udps.whether_video = True
                     offline_audio_thd = 600 * 1024
                     high_orders, high_bins_count, high_win_size = 5, 160, 21
@@ -31,7 +34,7 @@ class FlowFilter(NFPlugin):
                                             high_bins_count, high_win_size, low_orders, low_bins_count, low_win_size)
                     if markov_alg.pred_stream != -1 and markov_alg.pred_stream != None:
                         flow.udps.result_url_list.append(markov_alg.pred_stream.video_url)
-                    if len(flow.udps.result_url_list) >= 5:
+                    if len(flow.udps.result_url_list) >= self.result_filter:
                         if flow.udps.result_url == -1:
                             flow.udps.result_url = statistics.mode(flow.udps.result_url_list)
                             with open(self.log_file, 'a') as f:
