@@ -1,33 +1,7 @@
 import csv
-import os
 import socket
 import dpkt
 import matplotlib.pyplot as plt
-
-
-def getData(filepath):
-    filelist = os.listdir(filepath)
-    data = {}
-    for filename in filelist:
-        with open(filepath + filename, 'r') as f:
-            txt = f.read()
-        url = txt.replace('/n', '')
-        data[url] = {'filename': filename, 'chunklist': [], 'channel': []}
-    urllist = list(data.keys())
-    with open('finger.csv', 'r') as f:
-        reader = csv.reader(f)
-        txt = list(reader)
-    for i in txt:
-        if i[3] in urllist and i[2] == 'video':
-            chunklist = i[4].split('/')[1:]
-            chunklist = [int(i) for i in chunklist if int(i) > 10000]
-            if chunklist not in data[i[3]]['chunklist'] and len(chunklist) > 10:
-                data[i[3]]['chunklist'].append(chunklist)
-                data[i[3]]['channel'].append(i[11])
-    file2url = {}
-    for i in urllist:
-        file2url[data[i]['filename']] = i
-    return data, file2url
 
 
 def process_pcap(pcap, host_ip):
@@ -120,54 +94,43 @@ def request_chunk(P, host_ip):
     return video
 
 
-def write_finger(pcappath, host_ip, tmpfile, fingerfile):
-    with open(tmpfile, 'r') as f:
-        reader = csv.reader(f)
-        txt = list(reader)
-    key = {}
-    for i in txt:
-        pcap = i[0].split('/')[-1]
-        fingerprint = i[6].split('/')[1:]
-        key[pcap] = [int(j) for j in fingerprint if int(j) > 600 * 1024]
+def write_offline(datapath, file, host_ip, content, offlinefile):
+    _content = content[:]
+    s_videoflows = ''
+    try:
+        P, videoflows, P_all = process_pcap(datapath + 'pcap/' + file + '.pcap', host_ip)
+    except:
+        _content[7] = s_videoflows
+        _content[14] = s_videoflows
+        _content.remove(_content[4])
+        _content.remove(_content[4])
+        return 
+    for videoflow in videoflows:
+        s_videoflows = s_videoflows + '/{}.{}>{}.{}'.format(videoflow[1], videoflow[3], videoflow[0], videoflow[2])
 
-    len_txt = len(txt)
-    for i in range(len_txt):
-        pcap = txt[i][0].split('/')[-1]
-        s_videoflows = ''
-        try:
-            P, videoflows, P_all = process_pcap(pcappath + pcap + '.pcap', host_ip)
-        except:
-            txt[i][7] = s_videoflows
-            txt[i][14] = s_videoflows
-            txt[i].remove(txt[i][4])
-            txt[i].remove(txt[i][4])
-            continue
-        for videoflow in videoflows:
-            s_videoflows = s_videoflows + '/{}.{}>{}.{}'.format(videoflow[1], videoflow[3], videoflow[0], videoflow[2])
-        txt[i][7] = s_videoflows
-        txt[i][14] = s_videoflows
-        txt[i].remove(txt[i][4])
-        txt[i].remove(txt[i][4])
+    if s_videoflows != '':
+        _content[7] = s_videoflows
+        _content[14] = s_videoflows
+        _content.remove(_content[4])
+        _content.remove(_content[4])
 
-    with open(fingerfile, 'w', encoding='utf-8') as f:
-        for i in range(len_txt):
-            for j in range(len(txt[i])):
-                f.write(txt[i][j])
-                if j < len(txt[i]) - 1:
+        with open(offlinefile, 'a', encoding='utf-8') as f:
+            for i in range(len(_content)):
+                f.write(_content[i])
+                if i < len(_content) - 1:
                     f.write(',')
             f.write('\n')
 
 
-def write_onlie(datapath, host_ip, onlinefile):
-    videolist = os.listdir(datapath + 'url/')
-    with open(onlinefile, 'w', encoding='utf-8') as f:
-        for videoid in videolist:
-            with open(datapath + 'url/' + videoid, 'r', encoding='utf-8') as f1:
-                url = f1.read()
-            url = url.split(',')[0]
-            P, videoflows, P_all = process_pcap(datapath + 'pcap/' + videoid + '.pcap', host_ip)
-            for videoflow in videoflows:
-                video = request_chunk(P[videoflow], host_ip)
+def write_onlie(datapath, file, host_ip, onlinefile):
+    with open(datapath + 'url/' + file, 'r', encoding='utf-8') as f1:
+        url = f1.read()
+    url = url.split(',')[0]
+    P, videoflows, P_all = process_pcap(datapath + 'pcap/' + file + '.pcap', host_ip)
+    for videoflow in videoflows:
+        video = request_chunk(P[videoflow], host_ip)
+        if len(video) > 6:
+            with open(onlinefile, 'a', encoding='utf-8') as f:
                 f.write(url + ',')
                 f.write('{}.{}>{}.{},'.format(videoflow[1], videoflow[3], videoflow[0], videoflow[2]))
                 for chunk in video:
@@ -197,9 +160,17 @@ def fig_output(y1, y2, path):
 
 if __name__ == '__main__':
     host_ip = '192.168.32.38'
-    tmpfile = 'C:/Shrink/data/fingerprint/analysis_tmp.csv'
-    fingerfile = 'C:/Shrink/data/fingerprint/finger.csv'
-    onlinefile = 'C:/Shrink/data/fingerprint/online.csv'
+    tmpfile = 'C:/Shrink/data/temp/tmp_finger.csv'
     datapath = 'C:/Shrink/data/record/test/'
-    write_finger(datapath + 'pcap/', host_ip, tmpfile, fingerfile)
-    write_onlie(datapath, host_ip, onlinefile)
+    offlinefile = 'C:/Shrink/data/fingerprint/finger.csv'
+    onlinefile = 'C:/Shrink/data/fingerprint/online.csv'
+
+    with open(tmpfile, 'r') as f:
+        reader = csv.reader(f)
+        txt = list(reader)
+    len_txt = len(txt)
+
+    for i in range(len_txt):
+        file = txt[i][7].replace('/', '')
+        write_offline(datapath, file, host_ip, txt[i], offlinefile)
+        write_onlie(datapath, file, host_ip, onlinefile)

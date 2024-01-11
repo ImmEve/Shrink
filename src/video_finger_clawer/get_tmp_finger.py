@@ -25,7 +25,7 @@ class Finger_valid_val():
 
 
 class Finger():
-    def __init__(self, analysis_record_path, finger_record_path) -> None:
+    def __init__(self, analysis_record_path) -> None:
         # 存储每一个视频的finger_valid_dict,key为文件路径
         self.finger_valid_dict_list = {}
         # 存储每一个视频的video_itag_dict,key为文件路径
@@ -33,7 +33,6 @@ class Finger():
         # 记录每一个视频的URL,key为文件路径
         self.path2url = {}
         self.analysis_record_path = analysis_record_path
-        self.finger_record_path = finger_record_path
 
     def get_filelist(self, path):
         Filelist = []
@@ -85,7 +84,6 @@ class Finger():
             for chunk in info_chunks:
                 lines = chunk.split('\n')
                 request_head = lines[1]
-                response_head = lines[2]
                 # 提取itag 和 range
                 itag_index_beg = int(request_head.find("itag="))
                 itag_index_end = int(request_head.find("&", itag_index_beg))
@@ -119,29 +117,6 @@ class Finger():
         url_data = url_file.read()
         self.path2url[path] = url_data.strip()
         url_file.close()
-
-    # 记录指纹值
-    def record_finger(self, path, video_itag_dict):
-        recoed_file = open(self.finger_record_path, mode='a+', encoding='utf-8')
-        for itag, video_itag_val_list in video_itag_dict.items():
-            if len(video_itag_val_list) <= 2:
-                continue
-            recoed_file.write(str(path) + "," + str(itag) + ",")
-            tuple_dict = {}
-            chunk_type = {}
-            for video_itag_val in video_itag_val_list:
-                chunk_type[video_itag_val.chunk_type] = 1
-            if len(chunk_type) != 1:
-                print("type error!!!!!!!!!!!!!!!!!!!!!!!!!")
-                return
-            recoed_file.write(str(video_itag_val_list[0].chunk_type) + ",")
-            for video_itag_val in video_itag_val_list:
-                tuple_dict[video_itag_val.stream_tuple] = 1
-                recoed_file.write("/" + str(video_itag_val.chunk_len))
-            recoed_file.write(",")
-            for key, _ in tuple_dict.items():
-                recoed_file.write("/" + str(key).replace(",", ".").replace("-", ">"))
-            recoed_file.write("\n")
 
     # 记录指纹值与统计分析值
     def analysis_record(self):
@@ -198,11 +173,8 @@ class Finger():
                         stream_count += 1
                     if finger_valid_dict[itag].mix_count != 0:
                         mix_stream_count += 1
-        print("总流数：{}，缺首块的个数{}，多流传输的个数{}，流出现混合的个数{}，缺块流的个数{}".format(video_stream_count,
-                                                                                                   miss_first_chunk_count,
-                                                                                                   stream_count,
-                                                                                                   mix_stream_count,
-                                                                                                   miss_chunk_count))
+        print("总流数：{}，缺首块的个数{}，多流传输的个数{}，流出现混合的个数{}，缺块流的个数{}"
+              .format(video_stream_count, miss_first_chunk_count, stream_count, mix_stream_count, miss_chunk_count))
 
     # 对乱序的视频指纹块进行排序,处理单位是一个视频的文件
     def chunk_sort(self, video_itag_dict):
@@ -296,7 +268,6 @@ class Finger():
 
 
 if __name__ == '__main__':
-    finger = Finger("C:/Shrink/data/fingerprint/analysis_tmp.csv",
-                    "C:/Shrink/data/fingerprint/finger.csv")
+    finger = Finger("C:/Shrink/data/temp/tmp_finger.csv")
     finger.from_path_file_get_finger("C:/Shrink/data/temp/mitm_file_path")
     finger.analysis_record()

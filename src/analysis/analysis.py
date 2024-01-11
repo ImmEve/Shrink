@@ -4,7 +4,7 @@ import pickle
 import matplotlib.pyplot as plt
 import numpy as np
 from sklearn.linear_model import LinearRegression
-from compare import process_pcap, request_chunk, fig_output
+from src.video_finger_clawer.get_finger import process_pcap, request_chunk, fig_output
 
 
 def getDictdata(host_ip, analysis_path, pcap_path, dictdata_path):
@@ -136,10 +136,10 @@ def findOptimal(result_path):
 
 
 if __name__ == '__main__':
-    analysis_path = 'C:/Shrink/data/fingerprint/analysis_tmp.csv'
+    analysis_path = 'C:/Shrink/data/temp/tmp_finger.csv'
     pcap_path = 'C:/Shrink/data/record/test/pcap/'
     dictdata_path = 'C:/Shrink/data/temp/'
-    host_ip = '10.0.0.15'
+    host_ip = '192.168.32.38'
     getDictdata(host_ip, analysis_path, pcap_path, dictdata_path)
 
     fit_list, maxchunk, minchunk = getFitlist(dictdata_path, 100000)

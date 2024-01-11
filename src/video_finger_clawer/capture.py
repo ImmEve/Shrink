@@ -1,6 +1,6 @@
 import csv
 from batch_video_clawer_mitm import Batch_clawer_mitm
-from get_fingerprint import *
+from get_tmp_finger import *
 
 
 def write_finger(tmpfile, fingerfile):
@@ -26,14 +26,14 @@ def write_finger(tmpfile, fingerfile):
 
 
 if __name__ == '__main__':
-    tmpfile = 'C:/Shrink/data/fingerprint/analysis_tmp.csv'
+    tmpfile = 'C:/Shrink/data/temp/tmp_finger.csv'
     fingerfile = 'C:/Shrink/data/fingerprint/finger.csv'
 
     conf_path = "C:/Shrink/bin/video_title_clawer.conf"
     clawer = Batch_clawer_mitm(conf_path)
     clawer.clawer_from_csv('test')
 
-    finger = Finger(tmpfile, fingerfile)
+    finger = Finger(tmpfile)
     finger.from_path_file_get_finger("C:/Shrink/data/temp/mitm_file_path")
     finger.analysis_record()
 
