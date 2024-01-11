@@ -138,24 +138,7 @@ def write_onlie(datapath, file, host_ip, onlinefile):
                 f.write('\n')
 
 
-def fig_output(y1, y2, path):
-    y = y1
-    x = [i for i in range(len(y))]
-    plt.plot(x, y, marker='o', color='black', label='$chunk_{divide}$')
-    plt.legend()
 
-    y = y2
-    x = [i for i in range(len(y))]
-    plt.plot(x, y, marker='v', color='red', label='$chunk_{real}$')
-    plt.legend()
-
-    plt.ylim(600 * 1024, 2097152)
-    plt.xlabel('$chunk\_num$')
-    plt.ylabel('$chunk\_size$')
-    plt.grid()
-    plt.draw()
-    plt.savefig(path + '.png')
-    plt.close()
 
 
 if __name__ == '__main__':

@@ -4,7 +4,7 @@ import pickle
 import matplotlib.pyplot as plt
 import numpy as np
 from sklearn.linear_model import LinearRegression
-from src.video_finger_clawer.get_finger import process_pcap, request_chunk, fig_output
+from src.video_finger_clawer.get_finger import process_pcap, request_chunk
 
 
 def getDictdata(host_ip, analysis_path, pcap_path, dictdata_path):
@@ -104,35 +104,24 @@ def align(array1, array2, distance):
     return array1[ind:], array2[:Larr - ind]
 
 
-def fig_pdf(X):
-    plt.hist(X, bins=30, density=True, alpha=0.7, color='blue')
-
-
-def findOptimal(result_path):
-    with open(result_path, 'rb') as f:
-        result = pickle.load(f)
-    acc1 = []
-    acc2 = []
-    for i in range(len(result)):
-        ac1 = [j[2][4] for j in result[i][1:]]
-        ac2 = [j[2][5] for j in result[i][1:]]
-        acc1.append(max(ac1))
-        acc2.append(max(ac2))
-
-    y = acc1
-    x = [result[i][0] for i in range(len(y))]
-    plt.plot(x, y, marker='o', color='red', label='acc1')
+def fig_output(y1, y2, path):
+    y = y1
+    x = [i for i in range(len(y))]
+    plt.plot(x, y, marker='o', color='black', label='$chunk_{divide}$')
     plt.legend()
 
-    y = acc2
-    x = [result[i][0] for i in range(len(y))]
-    plt.plot(x, y, marker='v', color='black', label='acc2')
+    y = y2
+    x = [i for i in range(len(y))]
+    plt.plot(x, y, marker='v', color='red', label='$chunk_{real}$')
     plt.legend()
 
+    plt.ylim(600 * 1024, 2097152)
+    plt.xlabel('$chunk\_num$')
+    plt.ylabel('$chunk\_size$')
     plt.grid()
-    plt.show()
-
-    return result, acc1, acc2
+    plt.draw()
+    plt.savefig(path + '.png')
+    plt.close()
 
 
 if __name__ == '__main__':
