@@ -129,7 +129,7 @@ def write_onlie(datapath, file, host_ip, onlinefile):
     P, videoflows, P_all = process_pcap(datapath + 'pcap/' + file + '.pcap', host_ip)
     for videoflow in videoflows:
         video = request_chunk(P[videoflow], host_ip)
-        if len(video) > 6:
+        if len(video) >= 10:
             with open(onlinefile, 'a', encoding='utf-8') as f:
                 f.write(url + ',')
                 f.write('{}.{}>{}.{},'.format(videoflow[1], videoflow[3], videoflow[0], videoflow[2]))
